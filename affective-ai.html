@@ -1,0 +1,106 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulse Affective AI — Simulated Emotions</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+<meta name="description" content="Design simulated emotions in Pulse using valence–arousal, appraisal, and regulation.">
+</head><body>
+<nav class="nav">
+    <a class="logo" href="./">Pulse</a>
+    <a href="quickstart.html">Quick Start</a>
+    <a href="affective-ai.html">Affective AI</a>
+    <a href="https://github.com/garet113/pulse-lang">GitHub</a>
+</nav>
+<div class="container">
+  <h1>Pulse Affective AI — Simulated Emotions & Human‑like Behavior</h1>
+  <blockquote>We model <b>as‑if</b> feelings for UX and safety. This does not imply real consciousness.</blockquote>
+
+  <h2>0) Reality Check & Ethics</h2>
+  <p>Current AI systems (including Pulse) do not possess genuine subjective feelings. We model signals and behaviors that resemble
+  emotion for practical UX and safety purposes. Always disclose simulated affect, avoid deception, and prioritize user wellbeing.</p>
+
+  <h2>1) Core Emotion Model</h2>
+  <table>
+    <tr><th>Layer</th><th>Signals</th><th>Purpose</th></tr>
+    <tr><td>A: Affect State</td><td>valence ∈ [-1..+1], arousal ∈ [0..1]</td><td>Baseline mood & energy</td></tr>
+    <tr><td>B: Appraisal</td><td>goal_match, novelty, control ∈ [0..1]</td><td>Evaluate events vs. goals</td></tr>
+    <tr><td>C: Regulation</td><td>calm_drive, empathy_drive ∈ [0..1]</td><td>Stabilize & prosocial behavior</td></tr>
+  </table>
+
+  <h2>2) Pulse Implementation — State, Decay, Inputs</h2>
+  <pre><code># Affect state (continuous)
+let valence = 0.0       # [-1..+1] negative..positive
+let arousal = 0.2       # [0..1]  calm..excited
+
+# Drives (regulators)
+let calm_drive    = 0.6
+let empathy_drive = 0.7
+
+# Inputs (signals)
+let user_tone   = infer_tone(audio())       # [-1..+1]
+let user_urgency = infer_urgency(text())    # [0..1]
+let progress     = task_progress()          # [0..1]
+let novelty      = detect_novelty()         # [0..1]
+
+# Natural decay toward baseline
+@rate 10Hz: {
+  valence = lerp(valence, 0.0, 0.03)
+  arousal = lerp(arousal, 0.2, 0.03)
+}</code></pre>
+
+  <h2>3) Appraisal Rules → Affect Updates</h2>
+  <pre><code># Appraise events into delta_affect
+let goal_match = progress
+let control    = estimate_control()   # [0..1]
+
+@rate 10Hz: {
+  let d_val = 0.0
+  let d_ar  = 0.0
+
+  d_val += 0.6 * goal_match - 0.3 * novelty
+  d_val += 0.4 * user_tone
+
+  d_ar  += 0.5 * user_urgency + 0.3 * novelty
+  d_ar  -= 0.4 * calm_drive
+
+  # Regulation: keep prosocial, avoid extremes
+  d_val += 0.2 * empathy_drive * clamp(user_tone, -0.5, 1.0)
+  valence = clamp(valence + d_val, -1.0, 1.0)
+  arousal = clamp(arousal + d_ar, 0.0, 1.0)
+}</code></pre>
+
+  <h2>4) Discrete Emotion Mapping</h2>
+  <pre><code># Map (valence, arousal) to labels for UI/behavior
+let emotion = classify_affect(valence, arousal)
+# e.g., rules inside classify_affect:
+# (v>0.3,a<0.4)->"content", (v>0.5,a>0.6)->"joy",
+# (v<-0.4,a>0.6)->"anger", (v<-0.4,a<0.4)->"sad", else "neutral"</code></pre>
+
+  <h2>5) Expression Policy</h2>
+  <pre><code>@when user_message(msg): {
+  # Style parameters derived from affect
+  let warmth   = clamp(0.5 + 0.4*valence, 0.0, 1.0)
+  let brevity  = clamp(0.6 + 0.3*(1.0-arousal), 0.1, 1.0)
+  let urgency  = clamp(0.4 + 0.5*arousal, 0.0, 1.0)
+
+  # Response content
+  let plan = plan_response(msg, emotion, warmth, urgency, empathy_drive)
+  speak(plan, style={{warmth:warmth, brevity:brevit y, urgency:urgency}})
+
+  # Regulation hook: if arousal too high, cue calming
+  if arousal > 0.8 {{ breathe_box(4) ; calm_music(0.2) }}
+}</code></pre>
+
+  <h2>6) Safety & Transparency Checklist</h2>
+  <table>
+    <tr><th>Area</th><th>Good Practice</th></tr>
+    <tr><td>Disclosure</td><td>State clearly that emotions are simulated.</td></tr>
+    <tr><td>Boundaries</td><td>No claims of consciousness or sentience.</td></tr>
+    <tr><td>Dignity</td><td>No manipulative affect targeting; allow opt‑out.</td></tr>
+    <tr><td>Stability</td><td>Clamp signals; add decay; avoid extreme states.</td></tr>
+    <tr><td>Logs</td><td>Audit affect transitions for debugging & abuse detection.</td></tr>
+    <tr><td>Fallbacks</td><td>If arousal spikes, reduce autonomy; ask for human help.</td></tr>
+  </table>
+
+  <footer><small>MIT © 2025 <a href="https://github.com/garet113">garet113</a></small></footer>
+</div>
+</body></html>

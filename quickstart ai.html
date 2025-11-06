@@ -1,0 +1,35 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulse Quick Start</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head><body>
+<nav class="nav">
+    <a class="logo" href="./">Pulse</a>
+    <a href="quickstart.html">Quick Start</a>
+    <a href="affective-ai.html">Affective AI</a>
+    <a href="https://github.com/garet113/pulse-lang">GitHub</a>
+</nav>
+<div class="container">
+  <h1>Quick Start</h1>
+  <ol>
+    <li>Clone: <code>git clone git@github.com:garet113/pulse-lang.git</code></li>
+    <li>Install: <code>python -m pip install -e .</code></li>
+    <li>Run: <code>pulse example.pulse</code></li>
+  </ol>
+
+  <h2>First Program</h2>
+  <pre><code>let temp = sensor("temp")
+let hum  = sensor("humidity")
+let comfort = smooth((temp * 0.7) + (hum * 0.3), 3)
+
+@rate 2Hz: { print("comfort:", comfort) }</code></pre>
+
+  <h2>Time Blocks</h2>
+  <ul>
+    <li><code>@rate 60Hz</code> — run every frame</li>
+    <li><code>@every 1s</code> — periodic</li>
+    <li><code>@after 5s</code> — one-shot</li>
+    <li><code>@when event(payload)</code> — event-driven</li>
+  </ul>
+</div>
+</body></html>

@@ -1,0 +1,55 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pulse Programming Language</title>
+<meta name="description" content="Pulse — a reactive, time-native programming language for real-time systems and AI.">
+<meta property="og:title" content="Pulse Programming Language">
+<meta property="og:description" content="Reactive, time-native programming language built for live computation.">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head><body>
+<nav class="nav">
+    <a class="logo" href="./">Pulse</a>
+    <a href="quickstart.html">Quick Start</a>
+    <a href="affective-ai.html">Affective AI</a>
+    <a href="https://github.com/garet113/pulse-lang">GitHub</a>
+</nav>
+<div class="container">
+  <div class="hero">
+    <div class="content">
+      <h1>Pulse — Reactive, Time‑Native Language</h1>
+      <p>Variables in Pulse are <b>alive</b> — they update automatically when dependencies change. Built-in time blocks (<code>@rate</code>, <code>@every</code>, <code>@after</code>, <code>@when</code>) make real-time code natural.</p>
+      <div class="btns">
+        <a class="btn" href="quickstart.html">Get Started</a>
+        <a class="btn secondary" href="affective-ai.html">Affective AI Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Key Features</h3>
+      <ul>
+        <li>Reactive by default</li>
+        <li>Time-native syntax</li>
+        <li>Previous-state operator <code>~x</code></li>
+        <li>Events: <code>emit</code> + <code>@when</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Install (local dev)</h3>
+      <pre><code>python -m pip install -U pip
+python -m pip install -e .
+pulse example.pulse</code></pre>
+    </div>
+    <div class="card">
+      <h3>Example</h3>
+      <pre><code>const TWO = 2
+let temp = sensor("temp")
+let hum  = sensor("humidity")
+let comfort = smooth((temp * 0.7) + (hum * 0.3), 3)
+@rate 2Hz: { print("comfort:", comfort) }</code></pre>
+    </div>
+  </div>
+
+  <footer><small>MIT © 2025 <a href="https://github.com/garet113">garet113</a></small></footer>
+</div>
+</body></html>
